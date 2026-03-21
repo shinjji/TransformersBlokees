@@ -64,6 +64,7 @@
 
   @media (max-width: 700px) {
     .stat-box--specials { display: none; }
+    .stat-box--figures  { display: none; }
     .stat-box {
       padding: 8px 10px;
       width: auto;
@@ -349,6 +350,15 @@
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card-series-version {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(136,136,136,0.6);
   }
 
   .card-faction-text {
@@ -424,7 +434,7 @@
       <h1 class="hero-title">Blokees</h1>
     </div>
     <div class="hero-stats">
-      <div class="stat-box">
+      <div class="stat-box stat-box--figures">
         <div class="stat-num" id="total-count">0</div>
         <div class="stat-label">Figures</div>
       </div>
@@ -779,7 +789,10 @@ function buildCard(fig, idx) {
     <div class="card-info">
       <div class="card-name">${fig.name}</div>
       <div class="card-meta">
-        <span class="card-series">${fig.series}</span>
+        <span class="card-series">${(s => {
+          const m = s.match(/^(.*?)(\s+version\s+.*)$/i);
+          return m ? m[1] + '<br><span class=\'card-series-version\'>' + m[2].trim() + '</span>' : s;
+        })(fig.series)}</span>
         <span class="card-faction-text ${fig.faction}">${factionLabel}</span>
       </div>
     </div>
