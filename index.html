@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blokees In Disguise</title>
+<link rel="icon" type="image/png" href="https://wsrv.nl/?url=https://drive.google.com/uc?export%3Dview%26id%3D1gNh1nMheICFQj5M7cMMjhZl_Noc9fqer">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #1a1a1a;
+    --card-bg: #161616;
+    --orange: #e85d04;
+    --yellow: #f5a623;
+    --red: #c1121f;
+    --gold: #d4a017;
+    --purple: #6a0dad;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: rgba(255,255,255,0.08);
+    --glow: rgba(232, 93, 4, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HERO HEADER === */
+  .hero {
+    position: relative;
+    background: #0a0a0a;
+    padding: 40px 0 30px;
+    overflow: hidden;
+    border-bottom: 3px solid var(--orange);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-conic-gradient(from 0deg at 50% 120%, #e85d04 0deg 6deg, transparent 6deg 12deg);
+    opacity: 0.06;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .stat-box--specials { display: none; }
+    .stat-box {
+      padding: 8px 10px;
+      width: auto;
+      flex: 1;
+      min-width: 0;
+    }
+    .stat-num  { font-size: clamp(20px, 6vw, 32px); }
+    .stat-label { font-size: clamp(6px, 2vw, 9px); letter-spacing: 0; }
+    .hero-inner { gap: 10px; padding: 0 16px; }
+    .hero-stats { gap: 6px; }
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 7vw, 88px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: var(--text);
+    text-shadow: 3px 3px 0 var(--orange), 6px 6px 0 rgba(0,0,0,0.5);
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--orange);
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-top: 8px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .stat-box {
+    background: rgba(232, 93, 4, 0.12);
+    border: 1px solid rgba(232, 93, 4, 0.3);
+    padding: 12px 20px;
+    text-align: center;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    flex: 0 0 auto;
+    width: clamp(90px, 18vw, 120px);
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1;
+    color: var(--orange);
+  }
+
+  .stat-label {
+    font-size: clamp(7px, 1.2vw, 10px);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* === CONTROLS BAR === */
+  .controls {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(9px, 1.8vw, 12px);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #fff;
+  }
+
+  .search-wrap { display: none; }
+
+  .filter-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  #series-filters {
+    display: contents;
+  }
+
+  /* === GRID === */
+  .grid-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    border-left: 4px solid var(--orange);
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  /* === CARD === */
+  .card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    animation: cardIn 0.4s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: var(--orange);
+    box-shadow: 0 8px 30px var(--glow);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1;
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-img-wrap {
+    position: relative;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 65%, rgba(232,93,4,0.18) 0%, transparent 70%),
+      radial-gradient(circle at 50% 50%, #222 0%, #0d0d0d 100%);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Sunburst — always faintly visible, stronger on hover */
+  .card-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(232,93,4,0.055) 0deg 10deg, transparent 10deg 20deg);
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover .card-img-wrap::before { opacity: 2.5; }
+
+  /* Floor glow beneath the figure */
+  .card-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 55%;
+    height: 14px;
+    background: radial-gradient(ellipse at center, rgba(232,93,4,0.35) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    transition: opacity 0.3s, width 0.3s;
+  }
+
+  .card:hover .card-img-wrap::after {
+    opacity: 1.4;
+    width: 70%;
+  }
+
+  .card-img-wrap img {
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s, filter 0.3s;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.7));
+  }
+
+  .card:hover .card-img-wrap img {
+    transform: scale(1.09) translateY(-5px);
+    filter: drop-shadow(0 10px 22px rgba(232, 93, 4, 0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  }
+
+  /* Rarity badge */
+  .rarity-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    padding: 2px 8px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  .rarity-badge.standard { background: #333; color: #aaa; }
+  .rarity-badge.galaxy { background: linear-gradient(135deg, #1a237e, #4a148c); color: #c0c0ff; }
+  .rarity-badge.armor { background: linear-gradient(135deg, #7b4a00, #d4a017); color: #fff8e1; }
+
+  /* Faction badge */
+  .faction-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-info {
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-series {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card-faction-text {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .autobot { color: #e63946; }
+  .decepticon { color: #7b2d8b; }
+
+  /* Number badge on card */
+  .card-number {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(232, 93, 4, 0.15);
+    border-top: 1px solid rgba(232,93,4,0.2);
+    border-left: 1px solid rgba(232,93,4,0.2);
+    padding: 2px 6px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    color: rgba(232, 93, 4, 0.6);
+    letter-spacing: 1px;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === EMPTY STATE === */
+  .empty {
+    text-align: center;
+    padding: 60px;
+    color: var(--muted);
+    display: none;
+  }
+
+  .empty.visible { display: block; }
+  .empty h3 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; margin-bottom: 8px; }
+
+  /* === DIVIDER === */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 24px 32px;
+    max-width: 1152px;
+  }
+
+  /* === FOOTER === */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  footer span { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-subtitle">Robots In Disguise</div>
+      <h1 class="hero-title">Blokees</h1>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box">
+        <div class="stat-num" id="total-count">0</div>
+        <div class="stat-label">Figures</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="autobot-count">0</div>
+        <div class="stat-label">Autobots</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="decepticon-count">0</div>
+        <div class="stat-label">Decepticons</div>
+      </div>
+      <div class="stat-box stat-box--specials">
+        <div class="stat-num" id="special-count">0</div>
+        <div class="stat-label">Specials</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<nav class="controls">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="autobot">Autobots</button>
+  <button class="filter-btn" data-filter="decepticon">Decepticons</button>
+  <div class="filter-divider"></div>
+  <div id="series-filters"></div>
+</nav>
+
+<!-- GRID -->
+<section class="grid-section">
+  <div class="section-label" id="grid-label">ALL FIGURES</div>
+  <div class="grid" id="grid">
+    <!-- Loading skeletons -->
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+  <div class="empty" id="empty">
+    <h3>No results found</h3>
+    <p>Try a different filter.</p>
+  </div>
+  <div class="load-error" id="load-error">
+    <h3 id="error-title">⚠ Could not load collection</h3>
+    <p id="error-msg"></p>
+    <div class="config-form">
+      <div class="config-field">
+        <label>Google API Key</label>
+        <input type="text" id="input-api-key" placeholder="AIzaSy…" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="config-field">
+        <label>Sheet ID</label>
+        <input type="text" id="input-sheet-id" placeholder="1abc…" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="config-save" onclick="saveConfig()">Connect Sheet</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Blokees</span> · Transformers · Collection Tracker
+</footer>
+
+<style>
+  /* === SKELETON LOADING === */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface) 25%, #222 50%, var(--surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    aspect-ratio: 1 / 1.35;
+    border: 1px solid var(--border);
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* === ERROR STATE + CONFIG FORM === */
+  .load-error {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+    color: #e85d04;
+  }
+  .load-error.visible { display: block; }
+  .load-error h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; margin-bottom: 8px; }
+  .load-error p  { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+  .config-form {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 380px;
+    text-align: left;
+  }
+
+  .config-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .config-field label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .config-field input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: 'Outfit', monospace;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  .config-field input:focus {
+    border-color: var(--orange);
+  }
+
+  .config-save {
+    background: var(--orange);
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+
+  .config-save:hover { opacity: 0.85; }
+
+  /* === KEYWORD BADGE === */
+  .keyword-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    z-index: 2;
+    padding: 2px 8px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  /* Vehicle — brushed metallic silver */
+  .keyword-badge.keyword-vehicle {
+    background: linear-gradient(135deg, #4a4a4a, #a8a8a8, #5a5a5a, #c0c0c0);
+    background-size: 200% 200%;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    animation: metallic-sheen 3s ease-in-out infinite;
+  }
+  @keyframes metallic-sheen {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Special Galaxy — rainbow iridescent fade */
+  .keyword-badge.keyword-special-galaxy {
+    background: linear-gradient(90deg, #ff6ec7, #a855f7, #3b82f6, #06b6d4, #10b981, #facc15, #f97316, #ff6ec7);
+    background-size: 300% 100%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    animation: galaxy-shift 4s linear infinite;
+  }
+  @keyframes galaxy-shift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  /* Glittering — purple with sparkle shimmer */
+  .keyword-badge.keyword-glittering {
+    background: linear-gradient(135deg, #3b0764, #7c3aed, #a855f7, #4c1d95);
+    background-size: 200% 200%;
+    color: #e9d5ff;
+    text-shadow: 0 0 6px rgba(168,85,247,0.8);
+    animation: glitter-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(168,85,247,0.5), inset 0 0 4px rgba(255,255,255,0.1);
+  }
+  @keyframes glitter-pulse {
+    0%, 100% { background-position: 0% 50%; box-shadow: 0 0 8px rgba(168,85,247,0.5); }
+    50%       { background-position: 100% 50%; box-shadow: 0 0 14px rgba(168,85,247,0.9); }
+  }
+
+  /* Brilliant — gold shimmer */
+  .keyword-badge.keyword-brilliant {
+    background: linear-gradient(135deg, #78350f, #d97706, #fbbf24, #f59e0b, #92400e);
+    background-size: 200% 200%;
+    color: #fff8e1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    animation: gold-shimmer 2.5s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(251,191,36,0.4);
+  }
+  @keyframes gold-shimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* === RARITY BADGE OVERRIDES for new tiers === */
+  .rarity-badge.uncommon { background: linear-gradient(135deg, #1b4332, #2d6a4f); color: #95d5b2; }
+  .rarity-badge.rare     { background: linear-gradient(135deg, #1a237e, #4a148c); color: #c0c0ff; }
+  .rarity-badge.ultra    { background: linear-gradient(135deg, #7b4a00, #d4a017); color: #fff8e1; }
+</style>
+
+<script>
+// ============================================================
+// CONFIG — loaded from localStorage, fallback to hardcoded defaults
+// ============================================================
+const TAB_NAME        = 'Blokees';
+const PLACEHOLDER_IMG = 'sideswipe.png';
+
+function getConfig() {
+  return {
+    apiKey:  localStorage.getItem('blokees_api_key')  || '',
+    sheetId: localStorage.getItem('blokees_sheet_id') || '',
+  };
+}
+
+function saveConfig() {
+  const key     = document.getElementById('input-api-key').value.trim();
+  const sheetId = document.getElementById('input-sheet-id').value.trim();
+  if (!key || !sheetId) return;
+  localStorage.setItem('blokees_api_key',  key);
+  localStorage.setItem('blokees_sheet_id', sheetId);
+  document.getElementById('load-error').classList.remove('visible');
+  document.getElementById('grid').innerHTML = '<div class="skeleton"></div>'.repeat(6);
+  loadSheet();
+}
+
+// ============================================================
+// RARITY — map the fraction strings from the sheet
+// ============================================================
+const RARITY_MAP = {
+  '1/12':  { key: 'standard', label: 'Standard'  },
+  '1/24':  { key: 'uncommon', label: 'Uncommon'  },
+  '5/144': { key: 'rare',     label: 'Rare'      },
+  '1/144': { key: 'ultra',    label: 'Ultra Rare' },
+};
+
+function parseRarity(raw) {
+  if (!raw) return RARITY_MAP['1/12'];
+  const cleaned = raw.trim();
+  return RARITY_MAP[cleaned] || { key: 'standard', label: cleaned };
+}
+
+// ============================================================
+// IMAGE — convert Google Drive share link via wsrv.nl proxy
+// ============================================================
+function driveToImg(url) {
+  if (!url || !url.trim()) return PLACEHOLDER_IMG;
+  // Extract file ID from various Drive URL formats
+  const match = url.match(/[-\w]{25,}/);
+  if (!match) return PLACEHOLDER_IMG;
+  const fileId = match[0];
+  return `https://wsrv.nl/?url=https://drive.google.com/uc?export%3Dview%26id%3D${fileId}`;
+}
+
+// ============================================================
+// FETCH FROM GOOGLE SHEETS
+// ============================================================
+let COLLECTION = [];
+
+async function loadSheet() {
+  const { apiKey, sheetId } = getConfig();
+  const range  = encodeURIComponent(`${TAB_NAME}!A2:G200`);
+  const url    = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+  try {
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error(`Sheets API error: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    COLLECTION = rows
+      .filter(r => r[0] && r[0].trim())
+      .map((r, i) => {
+        const rarity = parseRarity(r[4]);
+        return {
+          id:          i + 1,
+          name:        r[0] ? r[0].trim() : '—',
+          series:      r[1] ? r[1].trim() : '',
+          seriesTitle: r[2] ? r[2].trim() : '',
+          faction:     r[3] ? r[3].trim().toLowerCase() : 'autobot',
+          rarity:      rarity.key,
+          rarityLabel: rarity.label,
+          imageUrl:    driveToImg(r[5]),
+          keyword:     r[6] ? r[6].trim().toLowerCase() : '',
+        };
+      });
+
+    // Build dynamic series filter buttons
+    buildSeriesFilters();
+    updateStats();
+
+    render(getFiltered());
+  } catch (err) {
+    console.error(err);
+    document.getElementById('grid').innerHTML = '';
+    const errEl = document.getElementById('load-error');
+    document.getElementById('error-msg').textContent = err.message;
+    // Pre-fill inputs with current values so user can correct them
+    document.getElementById('input-api-key').value  = apiKey;
+    document.getElementById('input-sheet-id').value = sheetId;
+    errEl.classList.add('visible');
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+const factionIcon = { autobot: '🔴', decepticon: '🟣' };
+
+function buildCard(fig, idx) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = `${idx * 30}ms`;
+  card.dataset.faction = fig.faction;
+  card.dataset.rarity  = fig.rarity;
+
+  const factionLabel = fig.faction === 'decepticon' ? 'Decepticon' : 'Autobot';
+  const icon         = factionIcon[fig.faction] || '🔴';
+
+  card.innerHTML = `
+    <div class="card-img-wrap">
+      <span class="faction-badge">${icon}</span>
+      <span class="rarity-badge ${fig.rarity}">${fig.rarityLabel}</span>
+      ${fig.keyword ? `<span class="keyword-badge keyword-${fig.keyword.replace(/\s+/g,'-')}">${fig.keyword}</span>` : ''}
+      <img src="${fig.imageUrl}"
+           alt="${fig.name}"
+           loading="lazy"
+           onerror="this.src='${PLACEHOLDER_IMG}'">
+    </div>
+    <div class="card-info">
+      <div class="card-name">${fig.name}</div>
+      <div class="card-meta">
+        <span class="card-series">${fig.series}</span>
+        <span class="card-faction-text ${fig.faction}">${factionLabel}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function updateStats() {
+  document.getElementById('total-count').textContent      = COLLECTION.length;
+  document.getElementById('autobot-count').textContent    = COLLECTION.filter(f => f.faction === 'autobot').length;
+  document.getElementById('decepticon-count').textContent = COLLECTION.filter(f => f.faction === 'decepticon').length;
+  document.getElementById('special-count').textContent    = COLLECTION.filter(f => f.rarity === 'rare' || f.rarity === 'ultra').length;
+}
+
+function render(data) {
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  grid.innerHTML = '';
+  if (data.length === 0) {
+    empty.classList.add('visible');
+  } else {
+    empty.classList.remove('visible');
+    data.forEach((fig, i) => grid.appendChild(buildCard(fig, i)));
+  }
+}
+
+// ============================================================
+// FILTERING
+// ============================================================
+let activeFilter = 'all';
+
+function getFiltered() {
+  return COLLECTION.filter(fig => {
+    if (activeFilter === 'all')         return true;
+    if (activeFilter === 'autobot')     return fig.faction === 'autobot';
+    if (activeFilter === 'decepticon')  return fig.faction === 'decepticon';
+    return fig.series === activeFilter;
+  });
+}
+
+function setFilter(value, label) {
+  activeFilter = value;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const match = document.querySelector(`.filter-btn[data-filter="${value}"]`);
+  if (match) match.classList.add('active');
+  document.getElementById('grid-label').textContent = label;
+  render(getFiltered());
+}
+
+function buildSeriesFilters() {
+  const container = document.getElementById('series-filters');
+  if (!container) return;
+  const series = [...new Set(COLLECTION.map(f => f.series).filter(Boolean))].sort();
+  container.innerHTML = series.map(s => {
+    const title = COLLECTION.find(f => f.series === s)?.seriesTitle || s;
+    return `<button class="filter-btn" data-filter="${s}" onclick="setFilter('${s}', '${title.toUpperCase()}')">${title}</button>`;
+  }).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const label = btn.dataset.filter === 'all' ? 'ALL FIGURES'
+                : btn.dataset.filter === 'autobot' ? 'AUTOBOTS'
+                : btn.dataset.filter === 'decepticon' ? 'DECEPTICONS'
+                : btn.textContent.toUpperCase();
+    setFilter(btn.dataset.filter, label);
+  });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadSheet();
+</script>
+</body>
+</html>
