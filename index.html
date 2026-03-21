@@ -448,7 +448,7 @@
       </div>
       <div class="stat-box stat-box--specials">
         <div class="stat-num" id="special-count">0</div>
-        <div class="stat-label">Specials</div>
+        <div class="stat-label">Rare</div>
       </div>
     </div>
   </div>
@@ -656,6 +656,7 @@
   .rarity-badge.uncommon { background: linear-gradient(135deg, #1b4332, #2d6a4f); color: #95d5b2; }
   .rarity-badge.rare     { background: linear-gradient(135deg, #1a237e, #4a148c); color: #c0c0ff; }
   .rarity-badge.ultra    { background: linear-gradient(135deg, #7b4a00, #d4a017); color: #fff8e1; }
+  .rarity-badge.special  { background: linear-gradient(135deg, #4a0000, #c1121f); color: #ffd6d6; }
 </style>
 
 <script>
@@ -694,7 +695,7 @@ const RARITY_MAP = {
 };
 
 function parseRarity(raw) {
-  if (!raw) return RARITY_MAP['1/12'];
+  if (!raw) return { key: 'special', label: 'Special' };
   const cleaned = raw.trim();
   return RARITY_MAP[cleaned] || { key: 'standard', label: cleaned };
 }
@@ -825,12 +826,18 @@ function render(data) {
 let activeFilter = 'all';
 
 function getFiltered() {
-  return COLLECTION.filter(fig => {
+  const results = COLLECTION.filter(fig => {
     if (activeFilter === 'all')         return true;
     if (activeFilter === 'autobot')     return fig.faction === 'autobot';
     if (activeFilter === 'decepticon')  return fig.faction === 'decepticon';
     return fig.series === activeFilter;
   });
+  // Shuffle using Fisher-Yates
+  for (let i = results.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [results[i], results[j]] = [results[j], results[i]];
+  }
+  return results;
 }
 
 function setFilter(value, label) {
