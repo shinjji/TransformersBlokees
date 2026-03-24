@@ -664,6 +664,172 @@
   .rarity-badge.rare     { background: linear-gradient(135deg, #1a237e, #4a148c); color: #c0c0ff; }
   .rarity-badge.ultra    { background: linear-gradient(135deg, #7b4a00, #d4a017); color: #fff8e1; }
   .rarity-badge.special  { background: linear-gradient(135deg, #4a0000, #c1121f); color: #ffd6d6; }
+
+  /* === LIGHTBOX === */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(6px);
+  }
+
+  .lightbox.active { display: flex; }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 18px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .lightbox-close:hover { border-color: var(--orange); color: var(--orange); }
+
+  .lightbox-inner {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    animation: lb-in 0.25s ease both;
+  }
+
+  @keyframes lb-in {
+    from { opacity: 0; transform: scale(0.94) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .lightbox-img-wrap {
+    flex: 0 0 auto;
+    width: clamp(200px, 40vw, 340px);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 65%, rgba(232,93,4,0.22) 0%, transparent 70%),
+      radial-gradient(circle at 50% 50%, #222 0%, #0d0d0d 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lightbox-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(232,93,4,0.06) 0deg 10deg, transparent 10deg 20deg);
+  }
+
+  .lightbox-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 16px;
+    background: radial-gradient(ellipse at center, rgba(232,93,4,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .lightbox-img-wrap img {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.7));
+  }
+
+  .lightbox-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .lightbox-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .lightbox-badges .rarity-badge,
+  .lightbox-badges .keyword-badge {
+    position: static;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  .lightbox-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1;
+    color: var(--text);
+    text-shadow: 2px 2px 0 var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .lightbox-series {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+
+  .lightbox-series-version {
+    display: block;
+    font-size: 10px;
+    color: rgba(136,136,136,0.6);
+  }
+
+  .lightbox-faction {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .lightbox-faction.autobot    { color: #e63946; }
+  .lightbox-faction.decepticon { color: #7b2d8b; }
+
+  @media (max-width: 600px) {
+    .lightbox-inner { flex-direction: column; gap: 24px; }
+    .lightbox-img-wrap { width: 70vw; }
+  }
+
+  /* === IDW PUBLISHING KEYWORD — warm shimmer === */
+  .keyword-badge.keyword-idw-publishing {
+    background: linear-gradient(135deg, #7a1a10, rgb(249,108,93), #ff8c7a, #fff0ee, rgb(249,108,93), #7a1a10);
+    background-size: 300% 300%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    animation: idw-shimmer 3.5s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3);
+  }
+
+  @keyframes idw-shimmer {
+    0%   { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
+    50%  { background-position: 100% 50%; box-shadow: 0 0 20px rgba(249,108,93,1), 0 0 40px rgba(249,108,93,0.5); }
+    100% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
+  }
+
 </style>
 
 <script>
@@ -806,6 +972,7 @@ function buildCard(fig, idx) {
       </div>
     </div>
   `;
+  card.addEventListener('click', () => openLightbox(fig));
   return card;
 }
 
@@ -877,10 +1044,74 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
+
+// ============================================================
+// LIGHTBOX
+// ============================================================
+function openLightbox(fig) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = fig.imageUrl;
+  document.getElementById('lightbox-img').alt = fig.name;
+  document.getElementById('lb-name').textContent = fig.name;
+  document.getElementById('lb-faction').textContent = fig.faction === 'decepticon' ? 'Decepticon' : 'Autobot';
+  document.getElementById('lb-faction').className = 'lightbox-faction ' + fig.faction;
+
+  const rarityEl = document.getElementById('lb-rarity');
+  rarityEl.textContent = fig.rarityLabel;
+  rarityEl.className = 'rarity-badge ' + fig.rarity;
+
+  const kwEl = document.getElementById('lb-keyword');
+  if (fig.keyword) {
+    kwEl.textContent = fig.keyword;
+    kwEl.className = `keyword-badge keyword-${fig.keyword.replace(/\s+/g,'-')}`;
+    kwEl.style.display = 'inline-block';
+  } else {
+    kwEl.style.display = 'none';
+  }
+
+  const seriesEl = document.getElementById('lb-series');
+  const m = fig.series.match(/^(.*?)(\s+version\s+.*)$/i);
+  seriesEl.innerHTML = m
+    ? `${m[1]}<span class="lightbox-series-version">${m[2].trim()}</span>`
+    : fig.series;
+
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox({ target: document.getElementById('lightbox') });
+});
+
 // ============================================================
 // INIT
 // ============================================================
 loadSheet();
 </script>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-inner">
+    <div class="lightbox-img-wrap">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+    <div class="lightbox-info">
+      <div class="lightbox-badges">
+        <span id="lb-rarity" class="rarity-badge"></span>
+        <span id="lb-keyword" class="keyword-badge" style="display:none;position:static;clip-path:none;"></span>
+      </div>
+      <h2 id="lb-name" class="lightbox-name"></h2>
+      <div id="lb-series" class="lightbox-series"></div>
+      <div id="lb-faction" class="lightbox-faction"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
