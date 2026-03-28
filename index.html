@@ -670,9 +670,18 @@
 
   /* IDW Publishing */
   .keyword-badge.keyword-idw-publishing {
-    background: rgb(249, 108, 93);
+    background: linear-gradient(135deg, #7a1a10, rgb(249,108,93), #ff8c7a, #fff0ee, rgb(249,108,93), #7a1a10);
+    background-size: 300% 300%;
     color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    animation: idw-shimmer 3.5s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3);
+  }
+
+  @keyframes idw-shimmer {
+    0%   { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
+    50%  { background-position: 100% 50%; box-shadow: 0 0 20px rgba(249,108,93,1), 0 0 40px rgba(249,108,93,0.5); }
+    100% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
   }
 
   /* === RARITY BADGE OVERRIDES for new tiers === */
@@ -829,23 +838,6 @@
     .lightbox-inner { flex-direction: column; gap: 24px; }
     .lightbox-img-wrap { width: 70vw; }
   }
-
-  /* === IDW PUBLISHING KEYWORD — warm shimmer === */
-  .keyword-badge.keyword-idw-publishing {
-    background: linear-gradient(135deg, #7a1a10, rgb(249,108,93), #ff8c7a, #fff0ee, rgb(249,108,93), #7a1a10);
-    background-size: 300% 300%;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-    animation: idw-shimmer 3.5s ease-in-out infinite;
-    box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3);
-  }
-
-  @keyframes idw-shimmer {
-    0%   { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
-    50%  { background-position: 100% 50%; box-shadow: 0 0 20px rgba(249,108,93,1), 0 0 40px rgba(249,108,93,0.5); }
-    100% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
-  }
-
 </style>
 
 <script>
@@ -878,6 +870,7 @@ function saveConfig() {
 // ============================================================
 const RARITY_MAP = {
   '1/6':   { key: 'standard', label: 'Standard'  },
+  '1/9':   { key: 'standard', label: 'Standard'  },
   '1/12':  { key: 'standard', label: 'Standard'  },
   '1/24':  { key: 'uncommon', label: 'Uncommon'  },
   '5/144': { key: 'rare',     label: 'Rare'      },
@@ -887,7 +880,7 @@ const RARITY_MAP = {
 function parseRarity(raw) {
   if (!raw) return { key: 'special', label: 'Special' };
   const cleaned = raw.trim();
-  return RARITY_MAP[cleaned] || { key: 'standard', label: cleaned };
+  return RARITY_MAP[cleaned] || { key: 'standard', label: 'Standard' };
 }
 
 // ============================================================
@@ -895,7 +888,6 @@ function parseRarity(raw) {
 // ============================================================
 function driveToImg(url) {
   if (!url || !url.trim()) return PLACEHOLDER_IMG;
-  // Extract file ID from various Drive URL formats
   const match = url.match(/[-\w]{25,}/);
   if (!match) return PLACEHOLDER_IMG;
   const fileId = match[0];
@@ -935,17 +927,14 @@ async function loadSheet() {
         };
       });
 
-    // Build dynamic series filter buttons
     buildSeriesFilters();
     updateStats();
-
     render(getFiltered());
   } catch (err) {
     console.error(err);
     document.getElementById('grid').innerHTML = '';
     const errEl = document.getElementById('load-error');
     document.getElementById('error-msg').textContent = err.message;
-    // Pre-fill inputs with current values so user can correct them
     document.getElementById('input-api-key').value  = apiKey;
     document.getElementById('input-sheet-id').value = sheetId;
     errEl.classList.add('visible');
@@ -1023,7 +1012,6 @@ function getFiltered() {
     if (activeFilter === 'decepticon')  return fig.faction === 'decepticon';
     return fig.series === activeFilter;
   });
-  // Shuffle using Fisher-Yates
   for (let i = results.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [results[i], results[j]] = [results[j], results[i]];
@@ -1059,7 +1047,6 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     setFilter(btn.dataset.filter, label);
   });
 });
-
 
 // ============================================================
 // LIGHTBOX
