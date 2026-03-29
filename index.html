@@ -684,6 +684,22 @@
     100% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(249,108,93,0.7), 0 0 24px rgba(249,108,93,0.3); }
   }
 
+  /* Dinosaur (Stegosaurus etc.) */
+  .keyword-badge.keyword-stegosaurus {
+    background: linear-gradient(135deg, #1a3a0a, #3a7d1a, #a8c239, #f5e642, #a8c239, #3a7d1a, #1a3a0a);
+    background-size: 300% 300%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    animation: dinosaur-shimmer 4s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(168,194,57,0.5), 0 0 20px rgba(168,194,57,0.2);
+  }
+
+  @keyframes dinosaur-shimmer {
+    0%   { background-position: 0% 50%; box-shadow: 0 0 10px rgba(168,194,57,0.5), 0 0 20px rgba(168,194,57,0.2); }
+    50%  { background-position: 100% 50%; box-shadow: 0 0 18px rgba(245,230,66,0.8), 0 0 36px rgba(168,194,57,0.4); }
+    100% { background-position: 0% 50%; box-shadow: 0 0 10px rgba(168,194,57,0.5), 0 0 20px rgba(168,194,57,0.2); }
+  }
+
   /* === RARITY BADGE OVERRIDES for new tiers === */
   .rarity-badge.uncommon { background: linear-gradient(135deg, #1b4332, #2d6a4f); color: #95d5b2; }
   .rarity-badge.rare     { background: linear-gradient(135deg, #1a237e, #4a148c); color: #c0c0ff; }
