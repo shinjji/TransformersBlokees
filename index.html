@@ -75,9 +75,6 @@
     .stat-label { font-size: clamp(6px, 2vw, 9px); letter-spacing: 0; }
     .hero-inner { gap: 10px; padding: 0 16px; }
     .hero-stats { gap: 6px; }
-    .grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
   }
 
   .hero-title {
@@ -204,6 +201,12 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   /* === CARD === */
