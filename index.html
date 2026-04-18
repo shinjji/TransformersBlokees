@@ -169,11 +169,13 @@
   .search-wrap { display: none; }
 
   .filter-divider {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
+    width: 2px;
+    height: 24px;
+    background: var(--orange);
     flex-shrink: 0;
     align-self: center;
+    opacity: 0.6;
+    margin: 0 4px;
   }
 
   #series-filters {
@@ -1058,10 +1060,14 @@ function setFilter(value, label) {
 function buildSeriesFilters() {
   const container = document.getElementById('series-filters');
   if (!container) return;
-  const series = [...new Set(COLLECTION.map(f => f.series).filter(Boolean))].sort();
-  container.innerHTML = series.map(s => {
-    const title = COLLECTION.find(f => f.series === s)?.seriesTitle || s;
-    return `<button class="filter-btn" data-filter="${s}" onclick="setFilter('${s}', '${title.toUpperCase()}')">${title}</button>`;
+  const seen = new Map();
+  COLLECTION.forEach(f => { if (f.seriesTitle && !seen.has(f.seriesTitle)) seen.set(f.seriesTitle, f.series); });
+  const sorted = [...seen.entries()].sort((a, b) => {
+    const normalize = s => s.replace(/^the\s+/i, '');
+    return normalize(a[0]).localeCompare(normalize(b[0]));
+  });
+  container.innerHTML = sorted.map(([title, series]) => {
+    return `<button class="filter-btn" data-filter="${series}" onclick="setFilter('${series}', '${title.toUpperCase()}')">${title}</button>`;
   }).join('');
 }
 
